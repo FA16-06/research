@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html class="ie ie7" lang="en-US">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>Make Offline Mirror of a Site using `wget` | Guy Rutenberg</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="https://www.guyrutenberg.com/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="https://www.guyrutenberg.com/wp-content/themes/twentytwelve/js/html5.js" type="text/javascript"></script>
+<![endif]-->
+<link rel='dns-prefetch' href='https://www.guyrutenberg.com/'>
+<link rel='dns-prefetch' href='https://s0.wp.com/'>
+<link rel='dns-prefetch' href='https://secure.gravatar.com/'>
+<link rel='dns-prefetch' href='https://fonts.googleapis.com/'>
+<link rel='dns-prefetch' href='https://s.w.org/'>
+<link rel="alternate" type="application/rss+xml" title="Guy Rutenberg &raquo; Feed" href="https://www.guyrutenberg.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Guy Rutenberg &raquo; Comments Feed" href="https://www.guyrutenberg.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Guy Rutenberg &raquo; Make Offline Mirror of a Site using `wget` Comments Feed" href="https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/www.guyrutenberg.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.6"}};
+			!function(a,b,c){function d(a){var c,d,e,f,g,h=b.createElement("canvas"),i=h.getContext&&h.getContext("2d"),j=String.fromCharCode;if(!i||!i.fillText)return!1;switch(i.textBaseline="top",i.font="600 32px Arial",a){case"flag":return i.fillText(j(55356,56806,55356,56826),0,0),!(h.toDataURL().length<3e3)&&(i.clearRect(0,0,h.width,h.height),i.fillText(j(55356,57331,65039,8205,55356,57096),0,0),c=h.toDataURL(),i.clearRect(0,0,h.width,h.height),i.fillText(j(55356,57331,55356,57096),0,0),d=h.toDataURL(),c!==d);case"diversity":return i.fillText(j(55356,57221),0,0),e=i.getImageData(16,16,1,1).data,f=e[0]+","+e[1]+","+e[2]+","+e[3],i.fillText(j(55356,57221,55356,57343),0,0),e=i.getImageData(16,16,1,1).data,g=e[0]+","+e[1]+","+e[2]+","+e[3],f!==g;case"simple":return i.fillText(j(55357,56835),0,0),0!==i.getImageData(16,16,1,1).data[0];case"unicode8":return i.fillText(j(55356,57135),0,0),0!==i.getImageData(16,16,1,1).data[0];case"unicode9":return i.fillText(j(55358,56631),0,0),0!==i.getImageData(16,16,1,1).data[0]}return!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g,h,i;for(i=Array("simple","flag","unicode8","diversity","unicode9"),c.supports={everything:!0,everythingExceptFlag:!0},h=0;h<i.length;h++)c.supports[i[h]]=d(i[h]),c.supports.everything=c.supports.everything&&c.supports[i[h]],"flag"!==i[h]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[i[h]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='wp-syntax-css-css'  href='../../../../wp-content/plugins/wp-syntax/css/wp-syntax.css%3Fver=1.0.css' type='text/css' media='all' />
+<link rel='stylesheet' id='twentytwelve-fonts-css'  href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&#038;subset=latin,latin-ext' type='text/css' media='all' />
+<link rel='stylesheet' id='twentytwelve-style-css'  href='../../../../wp-content/themes/twentytwelve-child/style.css%3Fver=4.6.css' type='text/css' media='all' />
+<!--[if lt IE 9]>
+<link rel='stylesheet' id='twentytwelve-ie-css'  href='https://www.guyrutenberg.com/wp-content/themes/twentytwelve/css/ie.css?ver=20121010' type='text/css' media='all' />
+<![endif]-->
+<link rel='stylesheet' id='social-logos-css'  href='../../../../wp-content/plugins/jetpack/_inc/social-logos/social-logos.min.css%3Fver=1.css' type='text/css' media='all' />
+<link rel='stylesheet' id='jetpack_css-css'  href='../../../../wp-content/plugins/jetpack/css/jetpack.css%3Fver=4.1.1.css' type='text/css' media='all' />
+<script type='text/javascript' src='../../../../wp-includes/js/jquery/jquery.js%3Fver=1.12.4'></script>
+<script type='text/javascript' src='../../../../wp-includes/js/jquery/jquery-migrate.min.js%3Fver=1.4.1'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var related_posts_js_options = {"post_heading":"h4"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='../../../../wp-content/plugins/jetpack/modules/related-posts/related-posts.js%3Fver=20150408'></script>
+<link rel='https://api.w.org/' href='https://www.guyrutenberg.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.guyrutenberg.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.guyrutenberg.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Comparison of Hebrew Fonts on Kindle Paperwhite' href='https://www.guyrutenberg.com/2014/04/21/comparison-of-hebrew-fonts-on-kindle-paperwhite/' />
+<link rel='next' title='C++ : mt19937 Example' href='https://www.guyrutenberg.com/2014/05/03/c-mt19937-example/' />
+<meta name="generator" content="WordPress 4.6" />
+<link rel="canonical" href="index.html" />
+<link rel='shortlink' href='https://wp.me/p2yuAL-z1' />
+<link rel="alternate" type="application/json+oembed" href="https://www.guyrutenberg.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.guyrutenberg.com%2F2014%2F05%2F02%2Fmake-offline-mirror-of-a-site-using-wget%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://www.guyrutenberg.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.guyrutenberg.com%2F2014%2F05%2F02%2Fmake-offline-mirror-of-a-site-using-wget%2F&#038;format=xml" />
+
+<link rel='dns-prefetch' href='https://v0.wordpress.com/'>
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Make Offline Mirror of a Site using `wget`" />
+<meta property="og:url" content="https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/" />
+<meta property="og:description" content="Sometimes you want to create an offline copy of a site that you can take and view even without internet access. Using wget you can make such copy easily: wget &#8211;mirror &#8211;convert-links &amp;#8…" />
+<meta property="article:published_time" content="2014-05-02T07:59:29+00:00" />
+<meta property="article:modified_time" content="2014-05-02T07:59:58+00:00" />
+<meta property="og:site_name" content="Guy Rutenberg" />
+<meta property="og:image" content="https://s0.wp.com/i/blank.jpg" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:card" content="summary" />
+</head>
+
+<body class="single single-post postid-2171 single-format-standard custom-font-enabled single-author">
+<div id="page" class="hfeed site">
+	<header id="masthead" class="site-header" role="banner">
+		<hgroup>
+			<h1 class="site-title"><a href="https://www.guyrutenberg.com/" title="Guy Rutenberg" rel="home">Guy Rutenberg</a></h1>
+			<h2 class="site-description">Keeping track of what I do</h2>
+		</hgroup>
+
+		<nav id="site-navigation" class="main-navigation" role="navigation">
+			<button class="menu-toggle">Menu</button>
+			<a class="assistive-text" href="index.html#content" title="Skip to content">Skip to content</a>
+			<div class="menu-menu-1-container"><ul id="menu-menu-1" class="nav-menu"><li id="menu-item-1453" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-1453"><a href="http://www.guyrutenberg.com/">Home</a></li>
+<li id="menu-item-1455" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1455"><a href="https://www.guyrutenberg.com/about/">About</a></li>
+<li id="menu-item-1456" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1456"><a href="https://www.guyrutenberg.com/contact-me/">Contact Me</a></li>
+<li id="menu-item-1459" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1459"><a href="https://www.guyrutenberg.com/lecture-notes/">Lecture Notes</a></li>
+</ul></div>		</nav><!-- #site-navigation -->
+
+			</header><!-- #masthead -->
+
+	<div id="main" class="wrapper">
+	<div id="primary" class="site-content">
+		<div id="content" role="main">
+
+			
+				
+	<article id="post-2171" class="post-2171 post type-post status-publish format-standard hentry category-tips tag-wget">
+				<header class="entry-header">
+			
+						<h1 class="entry-title">Make Offline Mirror of a Site using `wget`</h1>
+										<div class="comments-link">
+					<a href="index.html#comments">9 Replies</a>				</div><!-- .comments-link -->
+					</header><!-- .entry-header -->
+
+				<div class="entry-content">
+			<p>Sometimes you want to create an offline copy of a site that you can take and view even without internet access. Using <code>wget</code> you can make such copy easily:</p>
+<pre><code>wget --mirror --convert-links --adjust-extension --page-requisites 
+--no-parent http://example.org
+</code></pre>
+<p>Explanation of the various flags:</p>
+<ul>
+<li><code>--mirror</code> &#8211; Makes (among other things) the download recursive.</li>
+<li><code>--convert-links</code> &#8211; convert all the links (also to stuff like CSS stylesheets) to relative, so it will be suitable for offline viewing.</li>
+<li><code>--adjust-extension</code> &#8211; Adds suitable extensions to filenames (<code>html</code> or <code>css</code>) depending on their content-type.</li>
+<li><code>--page-requisites</code> &#8211; Download things like CSS style-sheets and images required to properly display the page offline.</li>
+<li><code>--no-parent</code> &#8211; When recursing do not ascend to the parent directory. It useful for restricting the download to only a portion of the site.</li>
+</ul>
+<p>Alternatively, the command above may be shortened:</p>
+<pre><code>wget -mkEpnp http://example.org
+</code></pre>
+<p>Note: that the last <code>p</code> is part of <code>np</code> (<code>--no-parent</code>) and hence you see <code>p</code> twice in the flags.</p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-email"><a rel="nofollow" data-shared="" class="share-email sd-button share-icon" href="https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/?share=email" target="_blank" title="Click to email this to a friend"><span>Email</span></a></li><li><a href="index.html#" class="sharing-anchor sd-button share-more"><span>More</span></a></li><li class="share-end"></li></ul><div class="sharing-hidden"><div class="inner" style="display: none;"><ul><li class="share-print"><a rel="nofollow" data-shared="" class="share-print sd-button share-icon" href="index.html#print" target="_blank" title="Click to print"><span>Print</span></a></li><li class="share-twitter"><a rel="nofollow" data-shared="sharing-twitter-2171" class="share-twitter sd-button share-icon" href="https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/?share=twitter" target="_blank" title="Click to share on Twitter"><span>Twitter</span></a></li><li class="share-end"></li><li class="share-facebook"><a rel="nofollow" data-shared="sharing-facebook-2171" class="share-facebook sd-button share-icon" href="https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/?share=facebook" target="_blank" title="Click to share on Facebook"><span>Facebook</span></a></li><li class="share-linkedin"><a rel="nofollow" data-shared="sharing-linkedin-2171" class="share-linkedin sd-button share-icon" href="https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/?share=linkedin" target="_blank" title="Click to share on LinkedIn"><span>LinkedIn</span></a></li><li class="share-end"></li><li class="share-google-plus-1"><a rel="nofollow" data-shared="sharing-google-2171" class="share-google-plus-1 sd-button share-icon" href="https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/?share=google-plus-1" target="_blank" title="Click to share on Google+"><span>Google</span></a></li><li class="share-reddit"><a rel="nofollow" data-shared="" class="share-reddit sd-button share-icon" href="https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/?share=reddit" target="_blank" title="Click to share on Reddit"><span>Reddit</span></a></li><li class="share-end"></li><li class="share-end"></li></ul></div></div></div></div></div>
+<div id='jp-relatedposts' class='jp-relatedposts' >
+	<h3 class="jp-relatedposts-headline"><em>Related</em></h3>
+</div>					</div><!-- .entry-content -->
+		
+		<footer class="entry-meta">
+			This entry was posted in <a href="https://www.guyrutenberg.com/category/tips/" rel="category tag">Tips</a> and tagged <a href="https://www.guyrutenberg.com/tag/wget/" rel="tag">wget</a> on <a href="index.html" title="10:59" rel="bookmark"><time class="entry-date" datetime="2014-05-02T10:59:29+00:00">May 2, 2014</time></a><span class="by-author"> by <span class="author vcard"><a class="url fn n" href="https://www.guyrutenberg.com/author/admin/" title="View all posts by Guy" rel="author">Guy</a></span></span>.								</footer><!-- .entry-meta -->
+	</article><!-- #post -->
+
+				<nav class="nav-single">
+					<h3 class="assistive-text">Post navigation</h3>
+					<span class="nav-previous"><a href="https://www.guyrutenberg.com/2014/04/21/comparison-of-hebrew-fonts-on-kindle-paperwhite/" rel="prev"><span class="meta-nav">&larr;</span> Comparison of Hebrew Fonts on Kindle Paperwhite</a></span>
+					<span class="nav-next"><a href="https://www.guyrutenberg.com/2014/05/03/c-mt19937-example/" rel="next">C++ : <code>mt19937</code> Example <span class="meta-nav">&rarr;</span></a></span>
+				</nav><!-- .nav-single -->
+
+				
+<div id="comments" class="comments-area">
+
+	
+			<h2 class="comments-title">
+			9 thoughts on &ldquo;<span>Make Offline Mirror of a Site using `wget`</span>&rdquo;		</h2>
+
+		<ol class="commentlist">
+				<li class="comment even thread-even depth-1" id="li-comment-910946">
+		<article id="comment-910946" class="comment">
+			<header class="comment-meta comment-author vcard">
+				<img alt='' src='https://secure.gravatar.com/avatar/7cede2d637f7b2f07f19b736dfc1de91?s=44&#038;d=identicon&#038;r=pg' srcset='https://secure.gravatar.com/avatar/7cede2d637f7b2f07f19b736dfc1de91?s=88&amp;d=identicon&amp;r=pg 2x' class='avatar avatar-44 photo' height='44' width='44' /><cite><b class="fn">David Wolski</b> </cite><a href="index.html#comment-910946"><time datetime="2014-07-07T13:59:50+00:00">July 7, 2014 at 13:59</time></a>			</header><!-- .comment-meta -->
+
+			
+			<section class="comment-content comment">
+				<p>wget usually doesn&#8217;t work very well for complete offline mirrors of website. Due to its parser there is always somethings missing, i.e. stylesheets, scripts, images. It simply isn&#8217;t the right tool for this task.<br />
+HTTrack is much slower than wget but a powerful parser. It&#8217;s GPL and available in most Linux-Distributions.<br />
+Documentation and sorce-code is available at <a href="http://www.httrack.com" rel="nofollow">http://www.httrack.com</a></p>
+							</section><!-- .comment-content -->
+
+			<div class="reply">
+							</div><!-- .reply -->
+		</article><!-- #comment-## -->
+	</li><!-- #comment-## -->
+	<li class="pingback odd alt thread-odd thread-alt depth-1" id="comment-1160230">
+		<p>Pingback: <a href='http://www.johnhaynes.net/make-an-offline-mirror-of-a-website-using-wget/' rel='external nofollow' class='url'>Make an Offline Mirror of a Site Using `wget` - John Haynes</a> </p>
+	</li><!-- #comment-## -->
+	<li class="pingback even thread-even depth-1" id="comment-1200100">
+		<p>Pingback: <a href='http://blog.longwin.com.tw/2014/10/linux-wget-get-full-web-page-link-replace-download-2014/' rel='external nofollow' class='url'>Linux 如何抓取網頁頁面 並 將相關連結置換 或 完整抓取下來 - Tsung&#039;s Blog</a> </p>
+	</li><!-- #comment-## -->
+	<li class="pingback odd alt thread-odd thread-alt depth-1" id="comment-1545039">
+		<p>Pingback: <a href='http://www.stigmatedbrain.net/wp/?p=96' rel='external nofollow' class='url'>Mirror | stigmatedbrain&#039;s corner</a> </p>
+	</li><!-- #comment-## -->
+	<li class="pingback even thread-even depth-1" id="comment-1714495">
+		<p>Pingback: <a href='http://justnorris.com/download-a-complete-single-page-with-wget/' rel='external nofollow' class='url'>Download a complete single page with wget - justnorris</a> </p>
+	</li><!-- #comment-## -->
+	<li class="comment odd alt thread-odd thread-alt depth-1" id="li-comment-1726804">
+		<article id="comment-1726804" class="comment">
+			<header class="comment-meta comment-author vcard">
+				<img alt='' src='https://secure.gravatar.com/avatar/5936dd43b2cec170e7d4bfe573c6b8f3?s=44&#038;d=identicon&#038;r=pg' srcset='https://secure.gravatar.com/avatar/5936dd43b2cec170e7d4bfe573c6b8f3?s=88&amp;d=identicon&amp;r=pg 2x' class='avatar avatar-44 photo' height='44' width='44' /><cite><b class="fn">bhl</b> </cite><a href="index.html#comment-1726804"><time datetime="2015-09-11T20:12:25+00:00">September 11, 2015 at 20:12</time></a>			</header><!-- .comment-meta -->
+
+			
+			<section class="comment-content comment">
+				<p>I second David Wolski&#8217;s comment.  HTTrack is an outstanding website mirroring tool.  I like it because it performs incremental updates.  Nothing like sucking down the Washington Post without adverts.</p>
+							</section><!-- .comment-content -->
+
+			<div class="reply">
+							</div><!-- .reply -->
+		</article><!-- #comment-## -->
+	</li><!-- #comment-## -->
+	<li class="pingback even thread-even depth-1" id="comment-1738363">
+		<p>Pingback: <a href='https://archivehour.wordpress.com/2015/09/25/web-archiving-resources-for-ndsa-ne-crew-and-anyone-else-reading-this/' rel='external nofollow' class='url'>web archiving resources for NDSA NE crew (and anyone else reading this!) | Archive Hour</a> </p>
+	</li><!-- #comment-## -->
+	<li class="pingback odd alt thread-odd thread-alt depth-1" id="comment-1758651">
+		<p>Pingback: <a href='https://nientestronzate.wordpress.com/2015/10/22/6467/' rel='external nofollow' class='url'>Niente stronzate ©</a> </p>
+	</li><!-- #comment-## -->
+	<li class="comment even thread-even depth-1" id="li-comment-1863147">
+		<article id="comment-1863147" class="comment">
+			<header class="comment-meta comment-author vcard">
+				<img alt='' src='https://secure.gravatar.com/avatar/a285df1d51c7b7dc1b87bbf7ee8b5b24?s=44&#038;d=identicon&#038;r=pg' srcset='https://secure.gravatar.com/avatar/a285df1d51c7b7dc1b87bbf7ee8b5b24?s=88&amp;d=identicon&amp;r=pg 2x' class='avatar avatar-44 photo' height='44' width='44' /><cite><b class="fn"><a href='http://imam.web.id' rel='external nofollow' class='url'>Imam Suharjo</a></b> </cite><a href="index.html#comment-1863147"><time datetime="2016-05-17T05:01:11+00:00">May 17, 2016 at 05:01</time></a>			</header><!-- .comment-meta -->
+
+			
+			<section class="comment-content comment">
+				<p>Thanks You for helping us 🙂<br />
+It&#8217;s wget -mkEpnp in my server</p>
+							</section><!-- .comment-content -->
+
+			<div class="reply">
+							</div><!-- .reply -->
+		</article><!-- #comment-## -->
+	</li><!-- #comment-## -->
+		</ol><!-- .commentlist -->
+
+		
+		
+	
+					<div id="respond" class="comment-respond">
+			<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="index.html#respond" style="display:none;">Cancel reply</a></small></h3>				<form action="https://www.guyrutenberg.com/wp-comments-post.php" method="post" id="commentform" class="comment-form">
+					<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" aria-required='true' required='required' /></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="text" value="" size="30" maxlength="100" aria-describedby="email-notes" aria-required='true' required='required' /></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="text" value="" size="30" maxlength="200" /></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='2171' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="9b6ed6926c" /></p><div class="g-recaptcha" data-sitekey="6Lfo4-ISAAAAAAxnqcNSPju7cp1jKzGD7tXSOjbP" data-theme="standard"></div><script type="text/javascript"src="https://www.google.com/recaptcha/api.js?hl=en"></script>            <div id="recaptcha-submit-btn-area">&nbsp;</div>
+            <noscript>
+            <style type='text/css'>#submit {display:none;}</style>
+            <input name="submit" type="submit" id="submit-alt" tabindex="6"
+                value="Submit Comment"/> 
+            </noscript><p class="comment-subscription-form"><input type="checkbox" name="subscribe_comments" id="subscribe_comments" value="subscribe" style="width: auto; -moz-appearance: checkbox; -webkit-appearance: checkbox;" /> <label class="subscribe-label" id="subscribe-label" for="subscribe_comments">Notify me of follow-up comments by email.</label></p><p class="comment-subscription-form"><input type="checkbox" name="subscribe_blog" id="subscribe_blog" value="subscribe" style="width: auto; -moz-appearance: checkbox; -webkit-appearance: checkbox;" /> <label class="subscribe-label" id="subscribe-blog-label" for="subscribe_blog">Notify me of new posts by email.</label></p><p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="158"/></p>				</form>
+					</div><!-- #respond -->
+		
+</div><!-- #comments .comments-area -->
+			
+		</div><!-- #content -->
+	</div><!-- #primary -->
+
+
+			<div id="secondary" class="widget-area" role="complementary">
+					<aside id="recent-posts-2" class="widget widget_recent_entries">		<h3 class="widget-title">Recent Posts</h3>		<ul>
+					<li>
+				<a href="https://www.guyrutenberg.com/2016/08/06/lyx-2-2-1-for-debian-jessie/">LyX 2.2.1 for Debian Jessie</a>
+						</li>
+					<li>
+				<a href="https://www.guyrutenberg.com/2016/07/23/installing-ordernet-pro-on-debian-jessie/">Installing OrderNet Pro on Debian Jessie</a>
+						</li>
+					<li>
+				<a href="https://www.guyrutenberg.com/2016/07/15/lyx-2-2-0-for-debian-jessie/">LyX 2.2.0 for Debian Jessie</a>
+						</li>
+					<li>
+				<a href="https://www.guyrutenberg.com/2016/07/15/creating-a-personal-apt-repository-using-dpkg-scanpackages/">Creating a personal apt repository using `dpkg-scanpackages`</a>
+						</li>
+					<li>
+				<a href="https://www.guyrutenberg.com/2016/07/09/playing-opus-files-on-android-marshmallow-6-0/">Playing Opus Files on Android Marshmallow (6.0)</a>
+						</li>
+					<li>
+				<a href="https://www.guyrutenberg.com/2016/06/12/fixing-html-rendering-in-wine-on-debian-jessie/">Fixing HTML Rendering in Wine on Debian Jessie</a>
+						</li>
+					<li>
+				<a href="https://www.guyrutenberg.com/2016/06/04/greasemonkey-fix-links-to-pdfs-in-bank-hapoalim/">Greasemonkey: Fix links to PDFs in Bank Hapoalim</a>
+						</li>
+				</ul>
+		</aside>		<aside id="text-248455283" class="widget widget_text"><h3 class="widget-title">Ads</h3>			<div class="textwidget"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-4066984350135216";
+/* blog skyscraper */
+google_ad_slot = "7825322513";
+google_ad_width = 160;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+		</aside><aside id="categories-1" class="widget widget_categories"><h3 class="widget-title">Categories</h3>		<ul>
+	<li class="cat-item cat-item-19"><a href="https://www.guyrutenberg.com/category/bash/" >Bash</a> (12)
+</li>
+	<li class="cat-item cat-item-23"><a href="https://www.guyrutenberg.com/category/book-reviews/" >Book Reviews</a> (1)
+</li>
+	<li class="cat-item cat-item-8"><a href="https://www.guyrutenberg.com/category/c/" >C/C++</a> (23)
+</li>
+	<li class="cat-item cat-item-146"><a href="https://www.guyrutenberg.com/category/code-snippets/" >Code Snippets</a> (1)
+</li>
+	<li class="cat-item cat-item-5"><a href="https://www.guyrutenberg.com/category/google-analytics/" >Google Analytics</a> (2)
+</li>
+	<li class="cat-item cat-item-18"><a href="https://www.guyrutenberg.com/category/greasemonkey/" >Greasemonkey</a> (5)
+</li>
+	<li class="cat-item cat-item-6"><a href="https://www.guyrutenberg.com/category/javascript/" >JavaScript</a> (3)
+</li>
+	<li class="cat-item cat-item-3"><a href="https://www.guyrutenberg.com/category/latex/" >LaTeX</a> (21)
+</li>
+	<li class="cat-item cat-item-11"><a href="https://www.guyrutenberg.com/category/linux/" >Linux</a> (41)
+</li>
+	<li class="cat-item cat-item-4"><a href="https://www.guyrutenberg.com/category/mediawiki/" >MediaWiki</a> (2)
+</li>
+	<li class="cat-item cat-item-14"><a href="https://www.guyrutenberg.com/category/php/" >PHP</a> (5)
+</li>
+	<li class="cat-item cat-item-9"><a href="https://www.guyrutenberg.com/category/projects/" >Projects</a> (41)
+<ul class='children'>
+	<li class="cat-item cat-item-20"><a href="https://www.guyrutenberg.com/category/projects/biscan/" >biscan</a> (1)
+</li>
+	<li class="cat-item cat-item-17"><a href="https://www.guyrutenberg.com/category/projects/mctext/" >mctext</a> (2)
+</li>
+	<li class="cat-item cat-item-10"><a href="https://www.guyrutenberg.com/category/projects/radiopy/" >radio.py</a> (5)
+</li>
+	<li class="cat-item cat-item-12"><a href="https://www.guyrutenberg.com/category/projects/spass/" >spass</a> (5)
+</li>
+</ul>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://www.guyrutenberg.com/category/python/" >Python</a> (14)
+</li>
+	<li class="cat-item cat-item-16"><a href="https://www.guyrutenberg.com/category/tips/" >Tips</a> (97)
+</li>
+	<li class="cat-item cat-item-13"><a href="https://www.guyrutenberg.com/category/tutorials/" >Tutorials</a> (25)
+</li>
+	<li class="cat-item cat-item-1"><a href="https://www.guyrutenberg.com/category/Uncategorized/" >Uncategorized</a> (24)
+</li>
+	<li class="cat-item cat-item-15"><a href="https://www.guyrutenberg.com/category/vim/" >vim</a> (8)
+</li>
+	<li class="cat-item cat-item-21"><a href="https://www.guyrutenberg.com/category/wordpress/" >Wordpress</a> (12)
+</li>
+	<li class="cat-item cat-item-22"><a href="https://www.guyrutenberg.com/category/xwrds/" >XWRDS</a> (2)
+</li>
+		</ul>
+</aside><aside id="archives-2" class="widget widget_archive"><h3 class="widget-title">Archives</h3>		<label class="screen-reader-text" for="archives-dropdown-2">Archives</label>
+		<select id="archives-dropdown-2" name="archive-dropdown" onchange='document.location.href=this.options[this.selectedIndex].value;'>
+			
+			<option value="">Select Month</option>
+				<option value='https://www.guyrutenberg.com/2016/08/'> August 2016 </option>
+	<option value='https://www.guyrutenberg.com/2016/07/'> July 2016 </option>
+	<option value='https://www.guyrutenberg.com/2016/06/'> June 2016 </option>
+	<option value='https://www.guyrutenberg.com/2016/04/'> April 2016 </option>
+	<option value='https://www.guyrutenberg.com/2016/01/'> January 2016 </option>
+	<option value='https://www.guyrutenberg.com/2015/11/'> November 2015 </option>
+	<option value='https://www.guyrutenberg.com/2015/10/'> October 2015 </option>
+	<option value='https://www.guyrutenberg.com/2015/09/'> September 2015 </option>
+	<option value='https://www.guyrutenberg.com/2015/03/'> March 2015 </option>
+	<option value='https://www.guyrutenberg.com/2015/02/'> February 2015 </option>
+	<option value='https://www.guyrutenberg.com/2015/01/'> January 2015 </option>
+	<option value='https://www.guyrutenberg.com/2014/12/'> December 2014 </option>
+	<option value='https://www.guyrutenberg.com/2014/11/'> November 2014 </option>
+	<option value='https://www.guyrutenberg.com/2014/10/'> October 2014 </option>
+	<option value='https://www.guyrutenberg.com/2014/09/'> September 2014 </option>
+	<option value='https://www.guyrutenberg.com/2014/08/'> August 2014 </option>
+	<option value='https://www.guyrutenberg.com/2014/06/'> June 2014 </option>
+	<option value='https://www.guyrutenberg.com/2014/05/'> May 2014 </option>
+	<option value='https://www.guyrutenberg.com/2014/04/'> April 2014 </option>
+	<option value='https://www.guyrutenberg.com/2014/01/'> January 2014 </option>
+	<option value='https://www.guyrutenberg.com/2013/12/'> December 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/11/'> November 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/10/'> October 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/09/'> September 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/08/'> August 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/07/'> July 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/06/'> June 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/05/'> May 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/04/'> April 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/03/'> March 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/02/'> February 2013 </option>
+	<option value='https://www.guyrutenberg.com/2013/01/'> January 2013 </option>
+	<option value='https://www.guyrutenberg.com/2012/12/'> December 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/11/'> November 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/10/'> October 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/08/'> August 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/07/'> July 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/06/'> June 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/05/'> May 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/04/'> April 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/03/'> March 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/02/'> February 2012 </option>
+	<option value='https://www.guyrutenberg.com/2012/01/'> January 2012 </option>
+	<option value='https://www.guyrutenberg.com/2011/12/'> December 2011 </option>
+	<option value='https://www.guyrutenberg.com/2011/11/'> November 2011 </option>
+	<option value='https://www.guyrutenberg.com/2011/09/'> September 2011 </option>
+	<option value='https://www.guyrutenberg.com/2011/08/'> August 2011 </option>
+	<option value='https://www.guyrutenberg.com/2011/07/'> July 2011 </option>
+	<option value='https://www.guyrutenberg.com/2011/06/'> June 2011 </option>
+	<option value='https://www.guyrutenberg.com/2011/05/'> May 2011 </option>
+	<option value='https://www.guyrutenberg.com/2011/01/'> January 2011 </option>
+	<option value='https://www.guyrutenberg.com/2010/12/'> December 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/11/'> November 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/10/'> October 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/09/'> September 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/08/'> August 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/05/'> May 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/04/'> April 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/03/'> March 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/02/'> February 2010 </option>
+	<option value='https://www.guyrutenberg.com/2010/01/'> January 2010 </option>
+	<option value='https://www.guyrutenberg.com/2009/12/'> December 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/11/'> November 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/09/'> September 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/08/'> August 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/07/'> July 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/06/'> June 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/05/'> May 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/04/'> April 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/03/'> March 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/02/'> February 2009 </option>
+	<option value='https://www.guyrutenberg.com/2009/01/'> January 2009 </option>
+	<option value='https://www.guyrutenberg.com/2008/12/'> December 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/11/'> November 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/10/'> October 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/08/'> August 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/07/'> July 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/06/'> June 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/05/'> May 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/04/'> April 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/03/'> March 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/02/'> February 2008 </option>
+	<option value='https://www.guyrutenberg.com/2008/01/'> January 2008 </option>
+	<option value='https://www.guyrutenberg.com/2007/12/'> December 2007 </option>
+	<option value='https://www.guyrutenberg.com/2007/11/'> November 2007 </option>
+	<option value='https://www.guyrutenberg.com/2007/10/'> October 2007 </option>
+	<option value='https://www.guyrutenberg.com/2007/09/'> September 2007 </option>
+	<option value='https://www.guyrutenberg.com/2007/08/'> August 2007 </option>
+	<option value='https://www.guyrutenberg.com/2007/07/'> July 2007 </option>
+	<option value='https://www.guyrutenberg.com/2007/02/'> February 2007 </option>
+	<option value='https://www.guyrutenberg.com/2006/12/'> December 2006 </option>
+
+		</select>
+		</aside><aside id="linkcat-2" class="widget widget_links"><h3 class="widget-title">Blogroll</h3>
+	<ul class='xoxo blogroll'>
+<li><a href="http://benbonfil.com/">Ben Bonfil</a></li>
+<li><a href="http://www.xwrds.com" title="Crossword solutions search engine">XWRDS</a></li>
+
+	</ul>
+</aside>
+<aside id="search-2" class="widget widget_search"><form role="search" method="get" id="searchform" class="searchform" action="https://www.guyrutenberg.com/">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<input type="text" value="" name="s" id="s" />
+					<input type="submit" id="searchsubmit" value="Search" />
+				</div>
+			</form></aside><aside id="pages-2" class="widget widget_pages"><h3 class="widget-title">Pages</h3>		<ul>
+			<li class="page_item page-item-281"><a href="https://www.guyrutenberg.com/about/">About</a></li>
+<li class="page_item page-item-126"><a href="https://www.guyrutenberg.com/contact-me/">Contact Me</a></li>
+<li class="page_item page-item-1389 page_item_has_children"><a href="https://www.guyrutenberg.com/lecture-notes/">Lecture Notes</a>
+<ul class='children'>
+	<li class="page_item page-item-1436"><a href="https://www.guyrutenberg.com/lecture-notes/algebraic-methods-in-combinatorics/">Algebraic Methods in Combinatorics</a></li>
+	<li class="page_item page-item-1383"><a href="https://www.guyrutenberg.com/lecture-notes/extremal-graph-theory/">Extremal Graph Theory</a></li>
+</ul>
+</li>
+<li class="page_item page-item-1473"><a href="https://www.guyrutenberg.com/vimrc/">vimrc</a></li>
+		</ul>
+		</aside><aside id="text-248455282" class="widget widget_text"><h3 class="widget-title">Projects</h3>			<div class="textwidget"><ul>
+<li><a href="http://www.openyahtzee.org">Open Yahtzee</a></li>
+<li><a href="http://www.guyrutenberg.com/infinitettt">InfiniteTTT</a></li>
+<li><a href="http://www.guyrutenberg.com/culmus-latex">culmus-latex</a></li>
+<li><a href="http://www.guyrutenberg.com/radiopy">radio.py</a></li>
+</ul>
+</div>
+		</aside><aside id="tag_cloud-3" class="widget widget_tag_cloud"><h3 class="widget-title">Tags</h3><div class="tagcloud"><a href='https://www.guyrutenberg.com/tag/amarok/' class='tag-link-29 tag-link-position-1' title='2 topics' style='font-size: 8pt;'>Amarok</a>
+<a href='https://www.guyrutenberg.com/tag/amazon-aws/' class='tag-link-56 tag-link-position-2' title='5 topics' style='font-size: 12.883720930233pt;'>Amazon AWS</a>
+<a href='https://www.guyrutenberg.com/tag/android/' class='tag-link-116 tag-link-position-3' title='6 topics' style='font-size: 14.023255813953pt;'>Android</a>
+<a href='https://www.guyrutenberg.com/tag/backup/' class='tag-link-48 tag-link-position-4' title='13 topics' style='font-size: 18.906976744186pt;'>backup</a>
+<a href='https://www.guyrutenberg.com/tag/cc/' class='tag-link-86 tag-link-position-5' title='4 topics' style='font-size: 11.581395348837pt;'>c/c++</a>
+<a href='https://www.guyrutenberg.com/tag/cmake/' class='tag-link-120 tag-link-position-6' title='3 topics' style='font-size: 9.953488372093pt;'>CMake</a>
+<a href='https://www.guyrutenberg.com/tag/cssrtl-py/' class='tag-link-24 tag-link-position-7' title='3 topics' style='font-size: 9.953488372093pt;'>cssrtl.py</a>
+<a href='https://www.guyrutenberg.com/tag/culmus-latex/' class='tag-link-31 tag-link-position-8' title='4 topics' style='font-size: 11.581395348837pt;'>culmus-latex</a>
+<a href='https://www.guyrutenberg.com/tag/debian/' class='tag-link-151 tag-link-position-9' title='7 topics' style='font-size: 14.837209302326pt;'>Debian</a>
+<a href='https://www.guyrutenberg.com/tag/duplicity/' class='tag-link-79 tag-link-position-10' title='4 topics' style='font-size: 11.581395348837pt;'>duplicity</a>
+<a href='https://www.guyrutenberg.com/tag/errors/' class='tag-link-75 tag-link-position-11' title='13 topics' style='font-size: 18.906976744186pt;'>Errors</a>
+<a href='https://www.guyrutenberg.com/tag/gentoo/' class='tag-link-34 tag-link-position-12' title='10 topics' style='font-size: 17.116279069767pt;'>Gentoo</a>
+<a href='https://www.guyrutenberg.com/tag/gettext/' class='tag-link-52 tag-link-position-13' title='3 topics' style='font-size: 9.953488372093pt;'>Gettext</a>
+<a href='https://www.guyrutenberg.com/tag/gnome/' class='tag-link-99 tag-link-position-14' title='6 topics' style='font-size: 14.023255813953pt;'>GNOME</a>
+<a href='https://www.guyrutenberg.com/tag/google/' class='tag-link-59 tag-link-position-15' title='5 topics' style='font-size: 12.883720930233pt;'>Google</a>
+<a href='https://www.guyrutenberg.com/tag/greasemonkey/' class='tag-link-161 tag-link-position-16' title='5 topics' style='font-size: 12.883720930233pt;'>Greasemonkey</a>
+<a href='https://www.guyrutenberg.com/tag/hebrew/' class='tag-link-33 tag-link-position-17' title='12 topics' style='font-size: 18.255813953488pt;'>Hebrew</a>
+<a href='https://www.guyrutenberg.com/tag/hyperref/' class='tag-link-32 tag-link-position-18' title='2 topics' style='font-size: 8pt;'>hyperref</a>
+<a href='https://www.guyrutenberg.com/tag/kde/' class='tag-link-35 tag-link-position-19' title='4 topics' style='font-size: 11.581395348837pt;'>KDE</a>
+<a href='https://www.guyrutenberg.com/tag/kindle/' class='tag-link-90 tag-link-position-20' title='4 topics' style='font-size: 11.581395348837pt;'>Kindle</a>
+<a href='https://www.guyrutenberg.com/tag/latex/' class='tag-link-153 tag-link-position-21' title='19 topics' style='font-size: 21.348837209302pt;'>LaTeX</a>
+<a href='https://www.guyrutenberg.com/tag/lighttpd/' class='tag-link-36 tag-link-position-22' title='9 topics' style='font-size: 16.46511627907pt;'>Lighttpd</a>
+<a href='https://www.guyrutenberg.com/tag/lyx/' class='tag-link-27 tag-link-position-23' title='10 topics' style='font-size: 17.116279069767pt;'>LyX</a>
+<a href='https://www.guyrutenberg.com/tag/mediawiki/' class='tag-link-154 tag-link-position-24' title='3 topics' style='font-size: 9.953488372093pt;'>MediaWiki</a>
+<a href='https://www.guyrutenberg.com/tag/openssl/' class='tag-link-165 tag-link-position-25' title='4 topics' style='font-size: 11.581395348837pt;'>OpenSSL</a>
+<a href='https://www.guyrutenberg.com/tag/optimization/' class='tag-link-69 tag-link-position-26' title='4 topics' style='font-size: 11.581395348837pt;'>optimization</a>
+<a href='https://www.guyrutenberg.com/tag/phpmyadmin/' class='tag-link-46 tag-link-position-27' title='3 topics' style='font-size: 9.953488372093pt;'>phpMyAdmin</a>
+<a href='https://www.guyrutenberg.com/tag/projects/' class='tag-link-156 tag-link-position-28' title='21 topics' style='font-size: 22pt;'>Projects</a>
+<a href='https://www.guyrutenberg.com/tag/python/' class='tag-link-155 tag-link-position-29' title='9 topics' style='font-size: 16.46511627907pt;'>Python</a>
+<a href='https://www.guyrutenberg.com/tag/qt/' class='tag-link-38 tag-link-position-30' title='3 topics' style='font-size: 9.953488372093pt;'>QT</a>
+<a href='https://www.guyrutenberg.com/tag/radio-py/' class='tag-link-54 tag-link-position-31' title='5 topics' style='font-size: 12.883720930233pt;'>radio.py</a>
+<a href='https://www.guyrutenberg.com/tag/rtl/' class='tag-link-42 tag-link-position-32' title='7 topics' style='font-size: 14.837209302326pt;'>RTL</a>
+<a href='https://www.guyrutenberg.com/tag/security/' class='tag-link-94 tag-link-position-33' title='8 topics' style='font-size: 15.651162790698pt;'>Security</a>
+<a href='https://www.guyrutenberg.com/tag/sourceforge/' class='tag-link-124 tag-link-position-34' title='3 topics' style='font-size: 9.953488372093pt;'>SourceForge</a>
+<a href='https://www.guyrutenberg.com/tag/spam/' class='tag-link-83 tag-link-position-35' title='3 topics' style='font-size: 9.953488372093pt;'>Spam</a>
+<a href='https://www.guyrutenberg.com/tag/spass/' class='tag-link-157 tag-link-position-36' title='3 topics' style='font-size: 9.953488372093pt;'>spass</a>
+<a href='https://www.guyrutenberg.com/tag/ssl/' class='tag-link-142 tag-link-position-37' title='8 topics' style='font-size: 15.651162790698pt;'>SSL</a>
+<a href='https://www.guyrutenberg.com/tag/svn/' class='tag-link-51 tag-link-position-38' title='4 topics' style='font-size: 11.581395348837pt;'>svn</a>
+<a href='https://www.guyrutenberg.com/tag/tiddlywiki/' class='tag-link-25 tag-link-position-39' title='5 topics' style='font-size: 12.883720930233pt;'>TiddlyWiki</a>
+<a href='https://www.guyrutenberg.com/tag/trac/' class='tag-link-44 tag-link-position-40' title='5 topics' style='font-size: 12.883720930233pt;'>Trac</a>
+<a href='https://www.guyrutenberg.com/tag/ubuntu/' class='tag-link-37 tag-link-position-41' title='15 topics' style='font-size: 19.720930232558pt;'>Ubuntu</a>
+<a href='https://www.guyrutenberg.com/tag/vim/' class='tag-link-159 tag-link-position-42' title='7 topics' style='font-size: 14.837209302326pt;'>vim</a>
+<a href='https://www.guyrutenberg.com/tag/web-development/' class='tag-link-82 tag-link-position-43' title='3 topics' style='font-size: 9.953488372093pt;'>Web Development</a>
+<a href='https://www.guyrutenberg.com/tag/wordpress/' class='tag-link-164 tag-link-position-44' title='11 topics' style='font-size: 17.767441860465pt;'>Wordpress</a>
+<a href='https://www.guyrutenberg.com/tag/wxwidgets/' class='tag-link-41 tag-link-position-45' title='3 topics' style='font-size: 9.953488372093pt;'>wxWidgets</a></div>
+</aside>		</div><!-- #secondary -->
+		</div><!-- #main .wrapper -->
+	<footer id="colophon" role="contentinfo">
+		<div class="site-info">
+						<a href="http://wordpress.org/" title="Semantic Personal Publishing Platform">Proudly powered by WordPress</a>
+		</div><!-- .site-info -->
+	</footer><!-- #colophon -->
+</div><!-- #page -->
+
+	<div style="display:none">
+	<div class="grofile-hash-map-7cede2d637f7b2f07f19b736dfc1de91">
+	</div>
+	<div class="grofile-hash-map-5936dd43b2cec170e7d4bfe573c6b8f3">
+	</div>
+	<div class="grofile-hash-map-a285df1d51c7b7dc1b87bbf7ee8b5b24">
+	</div>
+	</div>
+
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/www.guyrutenberg.com\/2014\/05\/02\/make-offline-mirror-of-a-site-using-wget\/":2171};
+	</script>
+	<div id="sharing_email" style="display: none;">
+		<form action="index.html" method="post">
+			<label for="target_email">Send to Email Address</label>
+			<input type="email" name="target_email" id="target_email" value="" />
+
+			
+				<label for="source_name">Your Name</label>
+				<input type="text" name="source_name" id="source_name" value="" />
+
+				<label for="source_email">Your Email Address</label>
+				<input type="email" name="source_email" id="source_email" value="" />
+
+						<input type="text" id="jetpack-source_f_name" name="source_f_name" class="input" value="" size="25" autocomplete="off" />
+			<script> document.getElementById('jetpack-source_f_name').value = ''; </script>
+			
+			<img style="float: right; display: none" class="loading" src="../../../../wp-content/plugins/jetpack/modules/sharedaddy/images/loading.gif" alt="loading" width="16" height="16" />
+			<input type="submit" value="Send Email" class="sharing_send" />
+			<a rel="nofollow" href="index.html#cancel" class="sharing_cancel">Cancel</a>
+
+			<div class="errors errors-1" style="display: none;">
+				Post was not sent - check your email addresses!			</div>
+
+			<div class="errors errors-2" style="display: none;">
+				Email check failed, please try again			</div>
+
+			<div class="errors errors-3" style="display: none;">
+				Sorry, your blog cannot share posts by email.			</div>
+		</form>
+	</div>
+		<script type="text/javascript">
+			var windowOpen;
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-twitter' ).on( 'click', function() {
+				if ( 'undefined' !== typeof windowOpen ){ // If there's another sharing window open, close it.
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery(this).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+			var windowOpen;
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-facebook' ).on( 'click', function() {
+				if ( 'undefined' !== typeof windowOpen ){ // If there's another sharing window open, close it.
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery(this).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+			var windowOpen;
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-linkedin' ).on( 'click', function() {
+				if ( 'undefined' !== typeof windowOpen ){ // If there's another sharing window open, close it.
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery(this).attr( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+				return false;
+			});
+		});
+		</script>
+				<script type="text/javascript">
+			var windowOpen;
+		jQuery(document).on( 'ready post-load', function(){
+			jQuery( 'a.share-google-plus-1' ).on( 'click', function() {
+				if ( 'undefined' !== typeof windowOpen ){ // If there's another sharing window open, close it.
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery(this).attr( 'href' ), 'wpcomgoogle-plus-1', 'menubar=1,resizable=1,width=480,height=550' );
+				return false;
+			});
+		});
+		</script>
+		            <script type="text/javascript">
+            var sub = document.getElementById('submit');
+            document.getElementById('recaptcha-submit-btn-area').appendChild (sub);
+            document.getElementById('submit').tabIndex = 6;
+            if ( typeof _recaptcha_wordpress_savedcomment != 'undefined') {
+                document.getElementById('comment').value = 
+                    _recaptcha_wordpress_savedcomment;
+            }
+            </script><script type='text/javascript' src='../../../../wp-content/plugins/akismet/_inc/form.js%3Fver=3.1.11'></script>
+<script type='text/javascript' src='https://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201634'></script>
+<script type='text/javascript' src='https://secure.gravatar.com/js/gprofiles.js?ver=2016Augaa'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='../../../../wp-content/plugins/jetpack/modules/wpgroho.js%3Fver=4.6'></script>
+<script type='text/javascript' src='../../../../wp-content/themes/twentytwelve/js/navigation.js%3Fver=20140711'></script>
+<script type='text/javascript' src='../../../../wp-includes/js/wp-embed.min.js%3Fver=4.6'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var sharing_js_options = {"lang":"en","counts":"1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='../../../../wp-content/plugins/jetpack/modules/sharedaddy/sharing.js%3Fver=4.1.1'></script>
+<script type='text/javascript' src='https://stats.wp.com/e-201634.js' async defer></script>
+<script type='text/javascript'>
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:4.1.1',blog:'37773423',post:'2171',tz:'3',srv:'www.guyrutenberg.com'} ]);
+	_stq.push([ 'clickTrackerInit', '37773423', '2171' ]);
+</script>
+<!--begin analytics-->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-380837-9");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<!--end analytics-->
+</body>
+</html>
+
+<!-- Dynamic page generated in 0.235 seconds. -->
+<!-- Cached page generated by WP-Super-Cache on 2016-08-24 16:46:54 -->
+
+<!-- Compression = gzip -->
+<!-- super cache -->

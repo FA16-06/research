@@ -3,10 +3,18 @@ set -euo pipefail
 
 usage() {
     cat <<EOF >&2
+<<<<<<< HEAD
 Usage: $0 [-u URL] [-q] [{-t TAG}...] [-T TITLE] [-d DESC]
    or: echo URL | $0 [-q] [{-t TAG}...] [-T TITLE] [-d DESC]
 
    -q          Enable quiet mode.
+=======
+Usage: $0 [-u URL] [-q] [{-t TAG}...] [-T TITLE] [-d DESC] [-m]
+   or: echo URL | $0 [-q] [{-t TAG}...] [-T TITLE] [-d DESC] [-m]
+
+   -q          Enable quiet mode.
+   -m          Mirror the page to the local filesystem.
+>>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
    -u URL      Add URL to notes.
    -t TAG      Add TAG to list of tags for this note.
    -T TITLE    Set title of note to TITLE.
@@ -17,11 +25,19 @@ EOF
 }
 
 take_notes() {
+<<<<<<< HEAD
     local opt_url opt_quiet opt_tags opt_desc opt_title
+=======
+    local opt_url opt_quiet opt_tags opt_desc opt_title opt_mirror
+>>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
     opt_url=
     opt_quiet=
     opt_desc=
     opt_title=
+<<<<<<< HEAD
+=======
+    opt_mirror=
+>>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
     opt_tags=( )
     while getopts "u:qt:T:d:" o; do
         case "$o" in
@@ -30,6 +46,10 @@ take_notes() {
             (t) opt_tags+=( "$OPTARG" );;
             (d) opt_desc=$OPTARG;;
             (T) opt_title=$OPTARG;;
+<<<<<<< HEAD
+=======
+            (m) opt_mirror=1;;
+>>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
             (*) usage;;
         esac
     done
@@ -45,7 +65,10 @@ take_notes() {
 
     local wget_opts
     wget_opts=()
+<<<<<<< HEAD
     #wget_opts+=( --mirror ) # Makes the download recursive
+=======
+>>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
     wget_opts+=( --convert-links ) # Convert links to be relative
     wget_opts+=( --adjust-extension ) # Make extension match content-type
     wget_opts+=( --page-requisites ) # Download CSS and anything else to mirror page correctly
@@ -55,6 +78,7 @@ take_notes() {
     if [ -n "$opt_quiet" ]; then
         wget_opts+=( --no-verbose ) # turn off verboseness, without being quiet
     fi
+<<<<<<< HEAD
     wget "${wget_opts[@]}" "$opt_url"
 
     local filesystem_path
@@ -65,6 +89,33 @@ take_notes() {
     esac
     filesystem_path=$filesystem_path.html
     filesystem_path=${filesystem_path/.html.html/.html}
+=======
+
+    local filesystem_path
+    if [ -n "$opt_mirror" ]; then
+        wget "${wget_opts[@]}" "$opt_url"
+
+        filesystem_path=${opt_url#http://}
+        filesystem_path=${filesystem_path#https://}
+        case "$filesystem_path" in
+            (*/) filesystem_path=${filesystem_path}index.html
+        esac
+        filesystem_path=$filesystem_path.html
+        filesystem_path=${filesystem_path/.html.html/.html}
+
+    else
+        filesystem_path=$(mktemp -t take_notes.XXXXXXXXX || exit 1)
+        export filesystem_path
+        cleanup() {
+            rm -f "$filesystem_path"
+            exit
+        }
+
+        trap 'cleanup' EXIT INT TERM
+
+        wget --quiet -O "$filesystem_path" "$opt_url"
+    fi
+>>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
 
     local html_title
     html_title=$(sed -ne '\!<title>! { s!.*<title>\([^<]*\)</title>!\1!; s![^[:print:]]!!g; p; q; }' "$filesystem_path")
@@ -100,7 +151,11 @@ take_notes() {
     cat <<EOF > "$notes_path"
 # $header
 
+<<<<<<< HEAD
 Tags: ${opt_tags[@]}
+=======
+Tags: ${opt_tags[@]:-}
+>>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
 
 Created: $date
 
@@ -111,7 +166,11 @@ $desc
 EOF
 
     cat <<EOF >> "$index_path"
+<<<<<<< HEAD
   * [$header]($notes_path) (${opt_tags[@]})
+=======
+    * [$header]($notes_path) (${opt_tags[@]:-})
+>>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
 EOF
 
     cat <<EOF

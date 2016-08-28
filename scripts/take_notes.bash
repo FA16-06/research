@@ -128,7 +128,7 @@ $desc
 EOF
 
     cat <<EOF >> "$index_path"
-  * [$header]($notes_path) (${opt_tags[@]:-})
+    * [$header]($notes_path) (${opt_tags[@]:-})
 EOF
 
     cat <<EOF

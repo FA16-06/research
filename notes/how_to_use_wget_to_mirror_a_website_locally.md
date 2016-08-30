@@ -5,10 +5,6 @@ Tags: wget snippet mirror
 Created: 2016-08-24 10:57:01
 
 [Make Offline Mirror of a Site using `wget` | Guy Rutenberg](https://www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/)
-<<<<<<< HEAD
-([local](http://localhost:8889/www.guyrutenberg.com/2014/05/02/make-offline-mirror-of-a-site-using-wget/index.html))
-=======
->>>>>>> 568b594ae01d0fffed81476c27c85cbe037d2148
 
 I modified this slightly to get:
 
